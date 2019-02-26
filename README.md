@@ -1,9 +1,7 @@
 1. clone the knowmak git and change to embedding-enrichment branch
 ```
-git clone https://github.com/GateNLP/knowmak-doc2onto-semsim.git
-cd knowmak-doc2onto-semsim/
-git fetch
-git checkout embedding-enrichment
+git clone https://github.com/GateNLP/project-knowmak.git
+cd project-knowmak/
 ```
 
 
