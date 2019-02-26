@@ -1,4 +1,4 @@
-1. clone the knowmak git and change to embedding-enrichment branch
+1. clone the knowmak git
 ```
 git clone https://github.com/GateNLP/project-knowmak.git
 cd project-knowmak/
