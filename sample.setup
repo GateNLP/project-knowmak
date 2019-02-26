@@ -1,0 +1,4 @@
+export GCP_HOME=/home/xingyi/tools/gcp/gcp-dist-3.0.1
+export KNOWMAK_GIT=/home/xingyi/project-knowmak
+export KNOWMAK_CORPORA=/home/xingyi/knowmakCorpora/work_split_combined_2018_12/pat-1812-00031
+export GATE_HOME=/home/xingyi/tools/GATE/GATE8.5.1
