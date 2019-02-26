@@ -1,0 +1,13 @@
+Phase:   FindTokenSeq
+Input:   Token SpaceToken Split
+Options: control = appelt
+
+// Find sequence of Tokens uninterrupted by Space or Split
+Rule: Lookup
+//( {Token.string !=~ "['`\"]", !Split}
+// ({Token.string !=~ "['`\"]", !Split})+
+( {Token.kind != "punctuation", !Split}
+ ({Token.kind != "punctuation", !Split})+
+):match
+-->
+:match.TokenSeq = {}

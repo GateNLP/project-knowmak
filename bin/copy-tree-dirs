@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source="$1"
+destination="$2"
+
+if [[ "x$destination" == "x" ]]
+then
+  echo 'need two parameters, source and destination dirs'
+  exit 1
+fi
+
+rsync -a --include='*/' --exclude='*' ${source}/ ${destination}

@@ -1,0 +1,16 @@
+Phase:   Lookup
+Input:   Lookup
+Options: control = all
+
+Rule: Lookup
+({Lookup.majorType == "knowmak"})
+:match
+-->
+:match {
+  Annotation lookup = gate.Utils.getOnlyAnn(matchAnnots);
+  FeatureMap fm = Factory.newFeatureMap();
+  fm.put("kind", lookup.getFeatures().get("minorType"));
+  String string = gate.Utils.cleanStringFor(doc, lookup).toLowerCase();
+  fm.put("match", string);
+  gate.Utils.addAnn(outputAS, lookup, "Knowmak", fm);
+}

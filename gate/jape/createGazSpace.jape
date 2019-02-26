@@ -1,0 +1,16 @@
+Phase:   CreateGazSpace
+Input:   SpaceToken Split
+Options: control = appelt
+
+Rule: r1
+({SpaceToken})
+:match
+-->
+:match.GazSpace = {kind="space"}
+
+Rule: r2
+({Split})
+:match
+-->
+:match.GazSpace = {kind="Split"}
+

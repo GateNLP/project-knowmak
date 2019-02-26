@@ -1,0 +1,6 @@
+MultiPhase: classifier
+Phases:
+knowmakLookup
+multiword1-en
+//multiword2 // not needed for this?
+//multi-lookup // moved after DeduplicateMultiWord

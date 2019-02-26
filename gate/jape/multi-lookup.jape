@@ -1,0 +1,79 @@
+Phase: MultiWord3
+Input: MultiWord Knowmak Split
+Options: control = all
+
+Rule: MultiLookup
+({MultiWord contains Knowmak}):match
+-->
+:match  {
+    List<Annotation> inners = gate.Utils.inDocumentOrder(gate.Utils.getContainedAnnotations(inputAS, matchAnnots, "Knowmak"));
+    if (inners.size() > 1) {
+        long mwStart = gate.Utils.start(matchAnnots);
+        long mwEnd   = gate.Utils.end(matchAnnots);
+        for (int i = 0 ; i < inners.size() ; i++) {
+            if (Thread.interrupted()) throw new JapeException("Timeout loop i");
+            Annotation starter = inners.get(i);
+            if (gate.Utils.start(starter) > mwStart) {
+                break;
+            }
+            String startUri = (String) starter.getFeatures().get("uri");
+            OClass startClass = ontology.getOClass(ontology.createOURI(startUri));
+            Double startMultiplier = (Double) starter.getFeatures().get("multiplier");
+
+            for (int j = i+1 ; j < inners.size() ; j++) {
+                if (Thread.interrupted()) throw new JapeException("Timeout loop j");
+                Annotation second = inners.get(j);
+                if (gate.Utils.end(second) == mwEnd) {
+                    String secondUri = (String) second.getFeatures().get("uri");
+                    OClass secondClass = ontology.getOClass(ontology.createOURI(secondUri));
+
+                    String resultUri = null;
+                    if (startUri.equals(secondUri)) {
+                        resultUri = startUri;
+                    }
+                    else if (startClass.isSubClassOf(secondClass, OConstants.Closure.DIRECT_CLOSURE)) {
+                        resultUri = secondUri;
+                    }
+                    else if (secondClass.isSubClassOf(startClass, OConstants.Closure.DIRECT_CLOSURE)) {
+                        resultUri = startUri;
+                    }
+
+                    if (resultUri != null) {
+                        
+                        // now check if there any different URI lookups in between
+                        AnnotationSet middles = inputAS.get("Knowmak").getContained(gate.Utils.end(starter), gate.Utils.start(second));
+                        boolean skip = false;
+                        for (Annotation middle : middles) {
+                            if (Thread.interrupted()) throw new JapeException("Timeout loop middle");
+                            if ( (! middle.getFeatures().get("uri").equals(startUri)) &&
+                                 (! middle.getFeatures().get("uri").equals(secondUri)) )  {
+                                skip = true;
+                                break;
+                            }
+                        }
+
+                        if (! skip) {
+                            Double multiplier = Math.max(startMultiplier, (Double) second.getFeatures().get("multiplier"));
+                            FeatureMap fm = Factory.newFeatureMap();
+                            fm.put("uri", startUri);
+                            fm.put("class", startUri);
+                            fm.put("topicID", starter.getFeatures().get("topicID"));
+                        
+                            Double score = (double) gate.Utils.getContainedAnnotations(inputAS, matchAnnots, "Token").size();
+                            score = score * multiplier;
+                            fm.put("score", score);
+                            fm.put("multiplier", multiplier);
+                            fm.put("kind", "composite");
+                            String string = gate.Utils.cleanStringFor(doc, matchAnnots).toLowerCase();
+                            fm.put("match", string);
+                            fm.put("lookups", gate.Utils.cleanStringFor(doc, starter) + " + " + gate.Utils.cleanStringFor(doc, second));
+                            fm.put("classes", startUri + " + " + secondUri);
+                            gate.Utils.addAnn(outputAS, matchAnnots, "Knowmak", fm);
+                        }
+                    }
+                }
+                    
+            }
+        }
+    }
+}
