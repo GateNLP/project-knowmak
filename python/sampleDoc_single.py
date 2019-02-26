@@ -228,8 +228,8 @@ class SampleSelection:
     def __init__(self, embd_model, corpusreader):
         self.embd_model = embd_model
         self.corpusreader = corpusreader
-        self.max_random_batch = 200
-        self.total_documents = 5
+        self.max_random_batch = 20000
+        self.total_documents = 50
 
     def simple_lang_detection(self, text_token):
         ratios = {}
